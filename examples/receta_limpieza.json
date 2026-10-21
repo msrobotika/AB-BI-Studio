@@ -1,0 +1,60 @@
+{
+  "format": "AB-BI Cleaning Recipe",
+  "version": 1,
+  "table": "datos_para_limpiar",
+  "steps": [
+    {
+      "op": "trim",
+      "columns": [
+        "Nombre",
+        "Importe",
+        "Fecha",
+        "Grupo"
+      ]
+    },
+    {
+      "op": "null_markers",
+      "columns": [
+        "Importe"
+      ],
+      "markers": [
+        "N/A",
+        ""
+      ]
+    },
+    {
+      "op": "to_number",
+      "columns": [
+        "Importe"
+      ],
+      "locale": "es",
+      "on_error": "keep"
+    },
+    {
+      "op": "to_date",
+      "columns": [
+        "Fecha"
+      ],
+      "format": "%d/%m/%Y",
+      "on_error": "null"
+    },
+    {
+      "op": "deduplicate",
+      "columns": [
+        "Nombre",
+        "Importe",
+        "Fecha",
+        "Grupo"
+      ]
+    },
+    {
+      "op": "drop_empty",
+      "columns": [
+        "Nombre",
+        "Importe",
+        "Fecha",
+        "Grupo"
+      ]
+    }
+  ]
+}

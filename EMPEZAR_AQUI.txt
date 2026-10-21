@@ -1,0 +1,22 @@
+AB-BI STUDIO 0.4 — INICIO
+
+1. Instala Python 3.11 o superior desde https://www.python.org/downloads/
+2. Extrae TODA la carpeta del ZIP a una carpeta nueva.
+3. En Windows, abre iniciar.bat. En el primer arranque se necesita Internet.
+4. Se abrirá el navegador. Mantén abierta la consola mientras usas la aplicación.
+5. Para detenerla, pulsa Ctrl+C en la consola.
+
+NOVEDADES
+- Donuts corregidos y temas oscuro/claro.
+- Filtros de texto, intervalos numéricos y fechas, varios valores y vacíos.
+- Preparar y limpiar: recetas con 16 transformaciones, vista previa e historial.
+- Copia de seguridad antes de aplicar; deshacer hasta que haya otros cambios.
+- Búsqueda, ordenación y exportación CSV de las filas filtradas.
+
+TUS PROYECTOS ANTERIORES
+Exporta tu proyecto .abbi desde la versión anterior y ábrelo en Proyecto y archivos.
+El ZIP nuevo no incluye ni modifica tus datos anteriores.
+No abras frontend/index.html: necesita el motor Python.
+Si el puerto 8765 está ocupado, se elegirá otro puerto local libre y se mostrará en la consola.
+
+Consulta README.md para instrucciones completas, límites y pruebas.

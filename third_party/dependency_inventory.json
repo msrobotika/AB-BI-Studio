@@ -1,0 +1,193 @@
+[
+  {
+    "name": "annotated-doc",
+    "version": "0.0.5",
+    "license": "MIT",
+    "license_files": [
+      "LICENSE"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/annotated-doc/LICENSE"
+    ]
+  },
+  {
+    "name": "annotated-types",
+    "version": "0.8.0",
+    "license": "MIT",
+    "license_files": [
+      "LICENSE"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/annotated-types/LICENSE"
+    ]
+  },
+  {
+    "name": "anyio",
+    "version": "4.15.1",
+    "license": "MIT",
+    "license_files": [
+      "LICENSE"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/anyio/LICENSE"
+    ]
+  },
+  {
+    "name": "click",
+    "version": "8.5.0",
+    "license": "BSD-3-Clause",
+    "license_files": [
+      "LICENSE.txt"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/click/LICENSE.txt"
+    ]
+  },
+  {
+    "name": "et-xmlfile",
+    "version": "2.0.0",
+    "license": "MIT",
+    "license_files": [
+      "LICENCE.python",
+      "LICENCE.rst",
+      "AUTHORS.txt"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/et-xmlfile/AUTHORS.txt",
+      "third_party/licenses/et-xmlfile/LICENCE.python",
+      "third_party/licenses/et-xmlfile/LICENCE.rst"
+    ]
+  },
+  {
+    "name": "fastapi",
+    "version": "0.157.0",
+    "license": "MIT",
+    "license_files": [
+      "LICENSE"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/fastapi/LICENSE"
+    ]
+  },
+  {
+    "name": "h11",
+    "version": "0.16.0",
+    "license": "MIT",
+    "license_files": [
+      "LICENSE.txt"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/h11/LICENSE.txt"
+    ]
+  },
+  {
+    "name": "idna",
+    "version": "3.20",
+    "license": "BSD-3-Clause",
+    "license_files": [
+      "LICENSE.md"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/idna/LICENSE.md"
+    ]
+  },
+  {
+    "name": "openpyxl",
+    "version": "3.1.5",
+    "license": "MIT",
+    "license_files": [
+      "LICENCE.rst"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/openpyxl/LICENCE.rst"
+    ]
+  },
+  {
+    "name": "opentelemetry-api",
+    "version": "1.45.1",
+    "license": "Apache-2.0",
+    "license_files": [
+      "LICENSE"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/opentelemetry-api/LICENSE"
+    ]
+  },
+  {
+    "name": "pydantic",
+    "version": "2.14.1",
+    "license": "MIT",
+    "license_files": [
+      "LICENSE"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/pydantic/LICENSE"
+    ]
+  },
+  {
+    "name": "pydantic-core",
+    "version": "2.50.1",
+    "license": "MIT",
+    "license_files": [
+      "LICENSE"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/pydantic-core/LICENSE"
+    ]
+  },
+  {
+    "name": "python-multipart",
+    "version": "0.0.32",
+    "license": "Apache-2.0",
+    "license_files": [
+      "LICENSE.txt"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/python-multipart/LICENSE.txt"
+    ]
+  },
+  {
+    "name": "starlette",
+    "version": "1.9.0",
+    "license": "BSD-3-Clause",
+    "license_files": [
+      "LICENSE.md"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/starlette/LICENSE.md"
+    ]
+  },
+  {
+    "name": "typing-extensions",
+    "version": "4.16.0",
+    "license": "PSF-2.0",
+    "license_files": [
+      "LICENSE"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/typing-extensions/LICENSE"
+    ]
+  },
+  {
+    "name": "typing-inspection",
+    "version": "0.4.4",
+    "license": "MIT",
+    "license_files": [
+      "LICENSE"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/typing-inspection/LICENSE"
+    ]
+  },
+  {
+    "name": "uvicorn",
+    "version": "0.54.0",
+    "license": "BSD-3-Clause",
+    "license_files": [
+      "LICENSE.md"
+    ],
+    "bundled_notices": [
+      "third_party/licenses/uvicorn/LICENSE.md"
+    ]
+  }
+]
