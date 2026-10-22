@@ -1,0 +1,20 @@
+name: "Informe de error"
+description: "Error reproducible del proyecto"
+title: "[bug] "
+body:
+  - type: input
+    id: env
+    attributes:
+      label: "Versión, entorno y dispositivo"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Pasos para reproducir y resultado esperado"
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Evidencia sin datos personales ni secretos"

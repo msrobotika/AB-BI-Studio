@@ -1,5 +1,10 @@
 # AB·BI Studio
 
+> **Ficha del proyecto · MS ROBOTIKA**  
+> **Estado:** v0.4 · aplicación de análisis y limpieza de datos · **Licencia:** ver archivo [LICENSE](LICENSE)  
+> **Evidencia:** [CI](.github/workflows/ci.yml) · [Capturas/documentación](docs/) · [Estado técnico](docs/PROJECT_STATUS.md)  
+> **Importante:** El motor DAX implementa un subconjunto propio; compatibilidad no idéntica a Power BI.
+
 **Análisis y preparación de datos en tu equipo, en español y con código abierto.**
 
 AB-BI Studio v0.4 reúne importación CSV/TSV, JSON y Excel multihoja, modelo semántico con relaciones, un intérprete independiente de un subconjunto DAX, informes, filtros interactivos y recetas de limpieza. La aplicación es gratuita bajo [licencia MIT](LICENSE); las dependencias conservan [sus propias licencias](THIRD_PARTY_NOTICES.md).
