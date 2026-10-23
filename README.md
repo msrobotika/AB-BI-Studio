@@ -90,6 +90,12 @@ Consulta [LICENSE](LICENSE), [avisos de terceros](THIRD_PARTY_NOTICES.md) y los 
 
 ## Integración con AB-Suite Core (PLC virtual → informes)
 
-El adaptador opcional scripts/ab_suite_telemetry.py recibe por SSE los snapshots de AB-PLC Simulator y los guarda en un CSV compatible con el importador de AB-BI. **No es todavía un conector de streaming dentro del dashboard**; el archivo se importa o actualiza de forma explícita.
+El adaptador opcional scripts/ab_suite_telemetry.py recibe por SSE los snapshots de AB-PLC Simulator y los guarda en un CSV compatible con el importador de AB-BI. Ese modo sigue disponible para exportar archivos; también se ofrece una integración experimental de datos en directo dentro del modelo BI mediante un conector separado y autenticado.
 
 Instrucciones de puesta en marcha, campos, seguridad y ejemplo PowerShell: [AB-Suite Core](docs/AB_SUITE_CORE.md). Solo datos de laboratorio y 127.0.0.1.
+
+## Nuevo: AB-Suite Core → SuitePLC en directo (experimental)
+
+Ahora existe un conector opt-in de lectura SSE que añade las muestras virtuales a **una sola tabla SuitePLC del modelo semántico**, sin reimportar el CSV. La interfaz refresca informes y tablas cuando llegan lecturas nuevas. Requiere arrancar AB-BI con ABBI_SUITE_WRITE_TOKEN y ejecutar el receptor desde otra consola con el token de monitor del bus.
+
+[Guía técnica y comandos PowerShell](docs/SUITE_LIVE.md). Sigue siendo un laboratorio local, no un sistema de control industrial.

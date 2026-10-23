@@ -42,3 +42,7 @@ Abre AB-BI Studio y selecciona Importar archivo → CSV. Elige ab_suite_plc_tele
 Código: scripts/ab_suite_telemetry.py y pruebas tests/test_ab_suite_telemetry.py.
 
 Contrato productor: https://github.com/msrobotika/AB-Suite-Core-arquitectura-de-integraci-n
+
+## Ingesta directa sin reimportación CSV
+
+Existe además el modo experimental de inserción de filas en el modelo de AB-BI, con un receptor SSE opcional y una tabla dedicada SuitePLC. Se mantiene desactivado sin consentimiento (token local) y se documenta por separado en [Suite Live](SUITE_LIVE.md). La opción CSV anterior continúa disponible.

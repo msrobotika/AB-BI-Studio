@@ -92,3 +92,15 @@ Los nombres de operación y parámetros están documentados por los ejemplos y l
 - 409: revisión o vista previa caducada, deshacer inseguro o copia alterada.
 
 Conserva los mensajes completos al comunicar un problema, eliminando datos privados. Una vista previa fallida no cambia los datos.
+
+## API de telemetría Suite Live (opt-in)
+
+| Método | Ruta | Función |
+| --- | --- | --- |
+| GET | /api/suite/summary | Estado público mínimo para refresco de UI: enabled, filas y revisión |
+| GET | /api/suite/status | Cursor confirmado y sesión del bus; requiere X-ABBI-Suite-Token |
+| POST | /api/suite/ingest | Lote 1–50 filas, contrato msrobotika.bi.suite.ingest.v1; requiere X-ABBI-Suite-Token |
+
+Se activa únicamente con la variable de entorno ABBI_SUITE_WRITE_TOKEN de 32 o más caracteres. Se recomienda escuchar solo en 127.0.0.1. El receptor externo nunca debe comunicarse con un servidor BI de otra red. Las filas admitidas son snapshots de PLC virtual con tipos explícitos; se rechazan NaN y formatos incompatibles. Los eventos repetidos de una sesión se deduplican por sequence, y un nuevo token Core genera una sesión distinta.
+
+La guía [Suite Live](SUITE_LIVE.md) incluye el procedimiento de arranque y los límites. No existe comando de control de PLC a través de esta API.

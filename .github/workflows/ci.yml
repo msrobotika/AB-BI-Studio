@@ -34,6 +34,10 @@ jobs:
         run: |
           node --check frontend/app.js
           node --check frontend/studio.js
+      - name: Check optional Suite Core live connector
+        run: |
+          python -m py_compile backend/suite_live.py
+          python -m py_compile scripts/ab_suite_live.py
       - name: Test semantic engine, preparation, API and browser
         run: python -m pytest -q --junitxml=test-results.xml
       - name: Verify source distribution
