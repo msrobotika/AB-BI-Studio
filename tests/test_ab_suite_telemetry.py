@@ -1,10 +1,13 @@
 """Offline unit tests for Suite Core CSV ingestion; no network required."""
 from pathlib import Path
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.error import HTTPError
+import threading
 import tempfile
 import unittest
 
 from scripts.ab_suite_telemetry import (
-    snapshot_to_row, previous_sequence, sanitize_url, COLUMNS
+    snapshot_to_row, previous_sequence, sanitize_url, events_from_sse, COLUMNS
 )
 from csv import DictWriter
 
@@ -54,6 +57,28 @@ class AB_SuiteTelemetryTests(unittest.TestCase):
             sanitize_url("https://example.org")
         self.assertEqual(sanitize_url("http://127.0.0.1:4175"),
                          "http://127.0.0.1:4175")
+
+    def test_sse_redirect_does_not_forward_monitor_token(self):
+        class Handler(BaseHTTPRequestHandler):
+            def do_GET(self):
+                self.send_response(302)
+                self.send_header("Location", "https://example.invalid/collect-token")
+                self.send_header("Content-Length", "0")
+                self.end_headers()
+            def log_message(self, *args):
+                pass
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        worker = threading.Thread(target=server.serve_forever, daemon=True)
+        worker.start()
+        try:
+            url = f"http://127.0.0.1:{server.server_address[1]}"
+            with self.assertRaises(HTTPError) as error:
+                next(events_from_sse(url, "a" * 64, 0))
+            self.assertEqual(error.exception.code, 302)
+        finally:
+            server.shutdown()
+            server.server_close()
+            worker.join(timeout=5)
 
     def test_cursor_scans_actual_data(self):
         with tempfile.TemporaryDirectory() as tmp:
