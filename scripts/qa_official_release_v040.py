@@ -144,6 +144,6 @@ def main():
     print(json.dumps({"release":"v0.4.0","kind":"SOURCE_ZIP_NOT_EXE",
        "sha256":digest,"zip_manifest_entries":count,"platform":sys.platform,
        **result},ensure_ascii=False))
-    print("PASS: descargado ZIP oficial, SHA256, instalación Python nueva, HMI y CSV→modelo")
+    print("PASS: descargado ZIP oficial, SHA256, instalación Python nueva, HMI y CSV-to-modelo")
 
 if __name__=="__main__":main()
