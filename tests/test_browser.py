@@ -144,3 +144,32 @@ def test_first_run_quickstart_guides_a_real_import(browser_page):
     page.click('#quickPrepare')
     expect(page.locator('#view-clean')).to_be_visible()
     assert not errors, errors
+
+
+def test_quickstart_contrast_in_both_themes(browser_page):
+    """The guided path remains legible in dark and light mode."""
+    page, _, errors = browser_page
+    def ratio(selector):
+        return page.evaluate("""selector => {
+          const fg = getComputedStyle(document.querySelector(selector)).color;
+          const bg = getComputedStyle(document.querySelector('#quickstart')).backgroundColor;
+          const luminance = value => {
+            const rgb = value.match(/[0-9.]+/g).slice(0, 3).map(Number);
+            const channels = rgb.map(x => {
+              x /= 255;
+              return x <= .04045 ? x / 12.92 : ((x + .055) / 1.055) ** 2.4;
+            });
+            return .2126 * channels[0] + .7152 * channels[1] + .0722 * channels[2];
+          };
+          const a = luminance(fg), b = luminance(bg);
+          return (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+        }""", selector)
+
+    for theme in ('dark', 'light'):
+        if theme == 'light':
+            page.click('#themeToggle')
+            expect(page.locator('html')).to_have_attribute('data-theme', 'light')
+        assert ratio('#quickstart summary') >= 4.5, theme
+        assert ratio('#quickExplore') >= 4.5, theme
+        assert ratio('#quickPrepare') >= 4.5, theme
+    assert not errors, errors
