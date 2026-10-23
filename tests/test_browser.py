@@ -117,3 +117,30 @@ def test_cleaning_preview_apply_undo_in_browser(browser_page):
     page.click('[data-view="profile"]');page.select_option('#profileTableSelect','Limpieza_demo');expect(page.locator('#qualitySummary')).to_contain_text('Filas duplicadas')
     page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+2')
     assert not errors,errors
+
+
+def test_first_run_quickstart_guides_a_real_import(browser_page):
+    """A first-time visitor can inspect the demo, import CSV and reach cleanup."""
+    page, url, errors = browser_page
+    expect(page.locator('#quickstart')).to_be_visible()
+    expect(page.locator('#quickSummary')).to_contain_text('tablas')
+
+    page.click('#quickExplore')
+    expect(page.locator('#view-data')).to_be_visible()
+
+    page.click('[data-view="dashboard"]')
+    with page.expect_file_chooser() as chooser:
+        page.click('#quickImport')
+    chooser.value.set_files({
+        'name': 'Datos_prueba.csv',
+        'mimeType': 'text/csv',
+        'buffer': 'Fecha,Linea,Produccion\\n2026-10-23,L1,120\\n'.replace('\\n', '\n').encode('utf-8')
+    })
+    expect(page.locator('#view-model')).to_be_visible()
+    expect(page.locator('#tableTree')).to_contain_text('Datos_prueba')
+
+    page.click('[data-view="dashboard"]')
+    expect(page.locator('#quickSummary')).to_contain_text('Datos del proyecto cargados correctamente')
+    page.click('#quickPrepare')
+    expect(page.locator('#view-clean')).to_be_visible()
+    assert not errors, errors
