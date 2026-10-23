@@ -86,3 +86,10 @@ AB-BI Studio es independiente y no está afiliado a Microsoft ni Tableau. No abr
 ## Licencias
 
 Consulta [LICENSE](LICENSE), [avisos de terceros](THIRD_PARTY_NOTICES.md) y los textos conservados en `third_party/licenses/`. No se incluyen binarios de productos comerciales ni bibliotecas Python empaquetadas. La revisión de licencias no certifica por sí sola toda la procedencia histórica ni ausencia de reclamaciones.
+
+
+## Integración con AB-Suite Core (PLC virtual → informes)
+
+El adaptador opcional scripts/ab_suite_telemetry.py recibe por SSE los snapshots de AB-PLC Simulator y los guarda en un CSV compatible con el importador de AB-BI. **No es todavía un conector de streaming dentro del dashboard**; el archivo se importa o actualiza de forma explícita.
+
+Instrucciones de puesta en marcha, campos, seguridad y ejemplo PowerShell: [AB-Suite Core](docs/AB_SUITE_CORE.md). Solo datos de laboratorio y 127.0.0.1.
