@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 import re
 import sys
-from urllib.request import Request, urlopen
+from urllib.request import Request, build_opener, HTTPRedirectHandler
 from urllib.error import HTTPError, URLError
 
 COLUMNS = (
@@ -24,6 +24,15 @@ COLUMNS = (
 CONTRACT = "msrobotika.suite.event.v1"
 ALLOWED_URL = re.compile(r"^http://127\.0\.0\.1:[0-9]{1,5}$")
 TOKEN_FORMAT = re.compile(r"^[a-f0-9]{64}$")
+
+class RejectRedirect(HTTPRedirectHandler):
+    """A bus redirect must not forward an application Bearer token."""
+    def redirect_request(self, request, fp, code, msg, headers, newurl):
+        return None
+
+
+OPENER = build_opener(RejectRedirect)
+
 
 
 def sanitize_url(url: str) -> str:
@@ -114,7 +123,7 @@ def events_from_sse(url: str, token: str, after: int):
         headers={"Authorization": f"Bearer {token}", "Accept": "text/event-stream"},
         method="GET",
     )
-    with urlopen(request, timeout=60) as response:
+    with OPENER.open(request, timeout=60) as response:
         lines: list[str] = []
         for raw in response:
             line = raw.decode("utf-8").rstrip("\r\n")
