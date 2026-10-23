@@ -164,3 +164,14 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px sol
 .bi-quick-note{font-size:11px;line-height:1.55;color:#99adc2;margin:7px 0 0}
 @media(max-width:620px){.bi-quickstart summary{padding:14px}.bi-quick-content{padding:4px 14px 14px}.bi-quick-actions{display:grid;grid-template-columns:1fr}.bi-quick-actions .btn{width:100%;text-align:center}}
 @media(prefers-reduced-motion:reduce){.bi-quick-chevron{transition:none}}
+
+
+/* The first-run panel follows the existing light-theme tokens, including buttons. */
+:root[data-theme=light] .bi-quickstart{background:#f5faf9;border-color:#a6d1c8}
+:root[data-theme=light] .bi-quickstart summary{color:#124f46}
+:root[data-theme=light] .bi-quick-content{border-top-color:#c4dfda}
+:root[data-theme=light] .bi-quick-content>p:first-child{color:#345968}
+:root[data-theme=light] .bi-quick-status{color:#145d53}
+:root[data-theme=light] .bi-quick-note{color:#4f6878}
+:root[data-theme=light] .bi-quick-actions .btn.outline{color:#25475c;border-color:#9fbec9}
+:root[data-theme=light] .bi-quick-actions .btn.outline:hover{background:#e6f3f0}
