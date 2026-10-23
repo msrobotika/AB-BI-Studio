@@ -103,3 +103,42 @@ def test_disabled_without_explicit_operator_token(live_client, monkeypatch):
     assert result.status_code == 503
     assert live_client.get("/api/suite/summary").json()["enabled"] is False
     assert TABLE not in api.MODEL["tables"]
+
+
+def test_live_receiver_batches_real_core_snapshots(monkeypatch):
+    from scripts import ab_suite_live as worker
+    from hashlib import sha256
+
+    bus_token = "a" * 64
+    bi_token = "s" * 40
+    submitted = []
+    monkeypatch.setattr(worker, "credentials", lambda: (bus_token, bi_token))
+
+    def source(url, token, after):
+        assert url == "http://127.0.0.1:4175"
+        assert token == bus_token
+        assert after == 0
+        yield sample_event(1)
+        yield sample_event(2)
+
+    def target(url, token, route, payload=None):
+        assert url == "http://127.0.0.1:8765"
+        assert token == bi_token
+        if route == "/api/suite/status":
+            return {"session_id": None, "last_sequence": 0}
+        assert route == "/api/suite/ingest"
+        submitted.append(payload)
+        return {"inserted": len(payload["rows"]), "duplicates": 0,
+                "last_sequence": payload["rows"][-1]["sequence"]}
+
+    monkeypatch.setattr(worker, "events_from_sse", source)
+    monkeypatch.setattr(worker, "bi_request", target)
+    inserted = worker.run(bus_url="http://127.0.0.1:4175",
+                          bi_url="http://127.0.0.1:8765",
+                          batch_size=2, max_rows=2)
+    assert inserted == 2
+    assert len(submitted) == 1
+    assert submitted[0]["schema"] == SCHEMA
+    assert submitted[0]["session_id"] == sha256(bus_token.encode()).hexdigest()[:24]
+    assert [r["sequence"] for r in submitted[0]["rows"]] == [1, 2]
+    assert all(r["Q0_0"] == 1 for r in submitted[0]["rows"])
