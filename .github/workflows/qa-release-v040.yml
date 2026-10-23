@@ -1,0 +1,41 @@
+name: QA official BI v0.4 release ZIP / actual first-run
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  install:
+    name: Official release SHA + new venv + CSV→BI / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Record exact checkout and Python
+        shell: bash
+        run: |
+          git rev-parse HEAD
+          python --version
+      - name: Check smoke script syntax
+        run: python -m py_compile scripts/qa_official_release_v040.py
+      - name: Download the two real immutable release assets
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $folder = Join-Path $env:RUNNER_TEMP "abbi-release-040"
+          New-Item -Path $folder -ItemType Directory -Force | Out-Null
+          gh release download v0.4.0 --repo msrobotika/AB-BI-Studio --dir $folder
+          Get-ChildItem -File -Path $folder | Select-Object Name, Length
+      - name: Compare SHA256 and ZIP manifest; install clean venv; boot API; upload real CSV
+        shell: pwsh
+        run: |
+          python scripts/qa_official_release_v040.py --assets-dir (Join-Path $env:RUNNER_TEMP "abbi-release-040")
