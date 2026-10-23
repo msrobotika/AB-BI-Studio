@@ -37,6 +37,38 @@ async function uploadFiles(files){for(const file of files){try{let form=new Form
 async function loadProjectFile(file){if(!file)return;try{let form=new FormData();form.append('file',file);await req('/api/project/import',{method:'POST',body:form});await loadModel();show('dashboard');toast('Proyecto cargado')}catch(err){toast(err.message,true)}}
 async function exportProject(){try{let resp=await fetch('/api/export');if(!resp.ok)throw Error('No se pudo exportar');downloadBlob(await resp.blob(),'AB_BI_proyecto_v04.abbi');toast('Proyecto exportado con datos, relaciones y medidas')}catch(err){toast(err.message,true)}}
 function bind(){document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>show(b.dataset.view));$('refreshReport').onclick=refreshDashboard;$('newVisual').onclick=()=>openVisual(null);$('visualForm').addEventListener('submit',saveVisual);$('closeDialog').onclick=closeModal;$('uploadBtn').onclick=()=>$('uploadInput').click();$('projectUpload').onclick=()=>$('uploadInput').click();$('uploadInput').onchange=async ev=>{await uploadFiles([...ev.target.files]);ev.target.value=''};$('filterDimension').onchange=()=>loadDistinct().catch(err=>toast(err.message,true));$('applyFilter').onclick=async()=>{let col=$('filterDimension').value,val=$('filterValue').value;F.filters[col]=val;try{await commitFilters()}catch(err){toast(err.message,true)}};$('clearFilters').onclick=async()=>{F.filters={};try{await commitFilters()}catch(err){toast(err.message,true)}};$('relFromTable').onchange=relationColumnSelectors;$('relToTable').onchange=relationColumnSelectors;$('relationForm').onsubmit=addRelation;$('saveMeasure').onclick=saveMeasure;$('evaluateDax').onclick=evalDax;$('newMeasure').onclick=clearMeasure;document.querySelectorAll('[data-template]').forEach(btn=>btn.onclick=()=>{let sample={SUM:'SUM(Lecturas[Produccion_kg])',CALCULATE:'CALCULATE([Producción total], Equipos[Area] = "Mezclas")',SUMX:'SUMX(Lecturas, Lecturas[Produccion_kg] * 0.95)',DIVIDE:'DIVIDE([Energía total], [Producción total], 0)',RELATED:'SUMX(Lecturas, Lecturas[Produccion_kg] * RELATED(Equipos[EquipoID]))'};$('daxSource').value=sample[btn.dataset.template];$('daxSource').focus()});$('dataTableSelect').onchange=()=>{F.dataPage=0;renderData()};$('profileTableSelect').onchange=renderProfile;$('prevRows').onclick=()=>{F.dataPage--;renderData()};$('nextRows').onclick=()=>{F.dataPage++;renderData()};$('exportTableCsv').onclick=exportCsv;$('executeSql').onclick=runSql;$('saveExport').onclick=exportProject;$('projectExport').onclick=exportProject;$('projectImportBtn').onclick=()=>$('projectFile').click();$('projectFile').onchange=async ev=>{await loadProjectFile(ev.target.files[0]);ev.target.value=''};$('resetDemo').onclick=async()=>{if(!confirm('Esto sustituirá el proyecto local, incluida la configuración y todas las tablas. ¿Continuar?'))return;try{await post('/api/demo',{});await loadModel();show('dashboard');toast('Ejemplo restaurado')}catch(err){toast(err.message,true)}};document.addEventListener('dragover',ev=>{if(ev.dataTransfer?.files?.length)ev.preventDefault()});document.addEventListener('drop',ev=>{if(ev.dataTransfer?.files?.length){ev.preventDefault();uploadFiles([...ev.dataTransfer.files])}})}
+
+// Opt-in Suite Core live data: poll only the local BI model revision, not the
+// external bus or its credentials. Never refresh an editor while it is in use.
+let suiteRevision=null, suitePollBusy=false;
+async function pollSuiteTable(){
+  if(document.hidden || !F.model || suitePollBusy)return;
+  suitePollBusy=true;
+  try{
+    const response=await fetch('/api/suite/summary',{cache:'no-store'});
+    if(!response.ok)return;
+    const state=await response.json();
+    if(!state.enabled)return;
+    let badge=$('suiteLinkStatus');
+    if(!badge){
+      badge=document.createElement('small');
+      badge.id='suiteLinkStatus';badge.className='muted';
+      $('pageDesc').after(badge);
+    }
+    badge.textContent='SUITE LIVE · '+state.rows+' lecturas virtuales';
+    const localRows=F.model.tables.find(t=>t.name==='SuitePLC')?.rows??0;
+    const changed=state.rows!==localRows ||
+      (suiteRevision!==null && suiteRevision!==state.revision);
+    suiteRevision=state.revision;
+    if(changed && ['dashboard','data','profile','model','project'].includes(F.view)){
+      await loadModel();
+      show(F.view);
+    }
+  }catch(_){/* El panel sigue siendo utilizable sin Suite Core. */}
+  finally{suitePollBusy=false;}
+}
+setInterval(pollSuiteTable,5000);
+
 async function init(){bind();try{await loadModel();show('dashboard')}catch(err){$('visualGrid').textContent='No se pudo conectar al motor AB-BI. Abre la aplicación desde iniciar.bat, no desde index.html.';toast(err.message,true)}}
 // studio.js binds the preparation tools before starting the application.
 

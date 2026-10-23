@@ -3,6 +3,7 @@ import csv
 import copy
 import functools
 import threading
+import hmac
 import io
 import json
 import os
@@ -14,7 +15,7 @@ from uuid import uuid4
 from typing import Optional
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, File, UploadFile, HTTPException, Body
+from fastapi import FastAPI, File, UploadFile, HTTPException, Body, Request
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -22,6 +23,7 @@ from openpyxl import load_workbook
 from .semantic import Engine, SemanticError, columns, model_validate, validate_relation, parse_dax
 from .filtering import typed, blank
 from .cleaning import prepare, fingerprint, related_orphans
+from .suite_live import append_batch, SCHEMA as SUITE_INGEST_SCHEMA, TABLE as SUITE_TABLE
 
 ROOT=Path(__file__).resolve().parents[1]
 FRONT=ROOT/'frontend'
@@ -553,6 +555,62 @@ def cleaning_undo():
         return summary()
     except Exception as exc:fail(exc)
 
+
+
+# Optional live virtual telemetry ingestion. Explicit opt-in via environment.
+def suite_write_authorized(request: Request):
+    expected=os.environ.get("ABBI_SUITE_WRITE_TOKEN","")
+    if len(expected)<32:
+        raise HTTPException(503,"Ingesta Suite desactivada: configura ABBI_SUITE_WRITE_TOKEN")
+    supplied=request.headers.get("x-abbi-suite-token","")
+    if not hmac.compare_digest(supplied,expected):
+        raise HTTPException(403,"Token de ingesta Suite inválido")
+
+
+@app.get("/api/suite/summary")
+@serialized
+def suite_public_summary():
+    enabled=len(os.environ.get("ABBI_SUITE_WRITE_TOKEN",""))>=32
+    state=MODEL.get("suite_live",{})
+    if not isinstance(state,dict):state={}
+    return {"enabled":enabled,"table":SUITE_TABLE,
+            "rows":len(MODEL["tables"].get(SUITE_TABLE,[])) if state.get("table")==SUITE_TABLE else 0,
+            "revision":str(state.get("session_id",""))+":"+str(state.get("last_sequence",0))}
+
+
+@app.get("/api/suite/status")
+@serialized
+def suite_status(request:Request):
+    suite_write_authorized(request)
+    state=MODEL.get("suite_live",{})
+    if not isinstance(state,dict):state={}
+    return {"schema":"msrobotika.bi.suite.status.v1",
+            "table":SUITE_TABLE,"session_id":state.get("session_id"),
+            "last_sequence":state.get("last_sequence",0),
+            "rows":len(MODEL["tables"].get(SUITE_TABLE,[])) if state.get("table")==SUITE_TABLE else 0}
+
+
+@app.post("/api/suite/ingest")
+@serialized
+def suite_ingest(request:Request,p:dict=Body(...)):
+    global MODEL
+    suite_write_authorized(request)
+    try:
+        if p.get("schema")!=SUITE_INGEST_SCHEMA:
+            raise SemanticError("Versión de ingesta Suite incompatible")
+        previous=MODEL
+        candidate,added,skipped=append_batch(previous,p.get("rows"),p.get("session_id"))
+        if added:
+            MODEL=candidate
+            try:persist()
+            except Exception:
+                MODEL=previous
+                raise
+        state=MODEL.get("suite_live",{})
+        return {"inserted":added,"duplicates":skipped,
+                "last_sequence":state.get("last_sequence",0),
+                "table":SUITE_TABLE}
+    except Exception as exc:fail(exc)
 
 app.mount('/static',StaticFiles(directory=FRONT),name='static')
 
