@@ -41,4 +41,4 @@ Abre AB-BI Studio y selecciona Importar archivo → CSV. Elige ab_suite_plc_tele
 
 Código: scripts/ab_suite_telemetry.py y pruebas tests/test_ab_suite_telemetry.py.
 
-Contrato productor: https://github.com/msrobotika/AB-PLC-Simulator/tree/main/packages/ab-suite-core
+Contrato productor: https://github.com/msrobotika/AB-Suite-Core-arquitectura-de-integraci-n
