@@ -147,3 +147,31 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible{outline:3px sol
 
 .sidebar-bottom a{color:var(--accent)!important}
 @media(max-width:900px){.filter-builder button{grid-column:auto!important}.filter-builder>div{min-width:0}}
+
+
+/* First useful result: simple, collapsible onboarding on the reports screen. */
+.bi-quickstart{border:1px solid #355b63;border-radius:12px;background:#102332;margin:0 0 18px;overflow:hidden}
+.bi-quickstart summary{cursor:pointer;list-style:none;padding:16px 19px;font-size:14px;font-weight:750;color:#d7f7f1;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bi-quickstart summary::-webkit-details-marker{display:none}
+.bi-quickstart summary:focus-visible{outline:3px solid #56d3c0;outline-offset:-3px}
+.bi-quick-chevron{flex:none;transition:transform .2s}
+.bi-quickstart:not([open]) .bi-quick-chevron{transform:rotate(-90deg)}
+.bi-quick-content{border-top:1px solid #28475b;padding:5px 19px 17px}
+.bi-quick-content>p:first-child{color:#bdcede;font-size:13px;line-height:1.6;margin:10px 0 15px}
+.bi-quick-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.bi-quick-actions .btn{min-height:44px}
+.bi-quick-status{font-size:12px;line-height:1.5;color:#a1e7d8;margin:15px 0 0}
+.bi-quick-note{font-size:11px;line-height:1.55;color:#99adc2;margin:7px 0 0}
+@media(max-width:620px){.bi-quickstart summary{padding:14px}.bi-quick-content{padding:4px 14px 14px}.bi-quick-actions{display:grid;grid-template-columns:1fr}.bi-quick-actions .btn{width:100%;text-align:center}}
+@media(prefers-reduced-motion:reduce){.bi-quick-chevron{transition:none}}
+
+
+/* The first-run panel follows the existing light-theme tokens, including buttons. */
+:root[data-theme=light] .bi-quickstart{background:#f5faf9;border-color:#a6d1c8}
+:root[data-theme=light] .bi-quickstart summary{color:#124f46}
+:root[data-theme=light] .bi-quick-content{border-top-color:#c4dfda}
+:root[data-theme=light] .bi-quick-content>p:first-child{color:#345968}
+:root[data-theme=light] .bi-quick-status{color:#145d53}
+:root[data-theme=light] .bi-quick-note{color:#4f6878}
+:root[data-theme=light] .bi-quick-actions .btn.outline{color:#25475c;border-color:#9fbec9}
+:root[data-theme=light] .bi-quick-actions .btn.outline:hover{background:#e6f3f0}

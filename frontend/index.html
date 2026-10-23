@@ -23,6 +23,19 @@
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <section class="view" id="view-dashboard">
       <div class="section-header"><div><h2>Vista general</h2><span id="reportMeta" class="muted small"></span></div><div class="right-inline"><button class="btn outline" id="refreshReport">↻ Actualizar</button><button class="btn primary" id="newVisual">＋ Crear visualización</button></div></div>
+      <details id="quickstart" class="bi-quickstart" open>
+  <summary>Empieza aquí · Crea tu primer informe con datos reales o de ejemplo <span class="bi-quick-chevron" aria-hidden="true">▾</span></summary>
+  <div class="bi-quick-content">
+    <p>Explora el proyecto de demostración con datos ficticios o importa tu CSV, JSON o Excel. Las opciones avanzadas (DAX y relaciones) están disponibles cuando las necesites.</p>
+    <div class="bi-quick-actions">
+      <button type="button" class="btn outline" id="quickExplore">1 · Explorar el ejemplo</button>
+      <button type="button" class="btn primary" id="quickImport">2 · Importar mis datos</button>
+      <button type="button" class="btn outline" id="quickPrepare">3 · Preparar y limpiar</button>
+    </div>
+    <p id="quickSummary" class="bi-quick-status" role="status" aria-live="polite">Cargando información del proyecto…</p>
+    <p class="bi-quick-note">Al terminar, usa «Exportar .abbi» para guardar tablas, medidas y gráficos. La importación y la limpieza requieren el servidor local.</p>
+  </div>
+</details>
       <div class="work-grid"><div class="work-main">
         <div class="kpi-row" id="kpiRow"></div><div class="viz-grid" id="visualGrid"></div>
       </div><aside class="filter-panel"><div class="filter-head"><b>Segmentadores</b><span class="mini-icon">⚑</span></div><p>Combina campos con Y. Los filtros se aplican al informe, las medidas y el explorador de tablas. Pulsa una categoría del gráfico para filtrar.</p><div class="inputstack filter-builder">

@@ -117,3 +117,59 @@ def test_cleaning_preview_apply_undo_in_browser(browser_page):
     page.click('[data-view="profile"]');page.select_option('#profileTableSelect','Limpieza_demo');expect(page.locator('#qualitySummary')).to_contain_text('Filas duplicadas')
     page.set_viewport_size({'width':390,'height':844});assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+2')
     assert not errors,errors
+
+
+def test_first_run_quickstart_guides_a_real_import(browser_page):
+    """A first-time visitor can inspect the demo, import CSV and reach cleanup."""
+    page, url, errors = browser_page
+    expect(page.locator('#quickstart')).to_be_visible()
+    expect(page.locator('#quickSummary')).to_contain_text('tablas')
+
+    page.click('#quickExplore')
+    expect(page.locator('#view-data')).to_be_visible()
+
+    page.click('[data-view="dashboard"]')
+    with page.expect_file_chooser() as chooser:
+        page.click('#quickImport')
+    chooser.value.set_files({
+        'name': 'Datos_prueba.csv',
+        'mimeType': 'text/csv',
+        'buffer': 'Fecha,Linea,Produccion\\n2026-10-23,L1,120\\n'.replace('\\n', '\n').encode('utf-8')
+    })
+    expect(page.locator('#view-model')).to_be_visible()
+    expect(page.locator('#tableTree')).to_contain_text('Datos_prueba')
+
+    page.click('[data-view="dashboard"]')
+    expect(page.locator('#quickSummary')).to_contain_text('Datos del proyecto cargados correctamente')
+    page.click('#quickPrepare')
+    expect(page.locator('#view-clean')).to_be_visible()
+    assert not errors, errors
+
+
+def test_quickstart_contrast_in_both_themes(browser_page):
+    """The guided path remains legible in dark and light mode."""
+    page, _, errors = browser_page
+    def ratio(selector):
+        return page.evaluate("""selector => {
+          const fg = getComputedStyle(document.querySelector(selector)).color;
+          const bg = getComputedStyle(document.querySelector('#quickstart')).backgroundColor;
+          const luminance = value => {
+            const rgb = value.match(/[0-9.]+/g).slice(0, 3).map(Number);
+            const channels = rgb.map(x => {
+              x /= 255;
+              return x <= .04045 ? x / 12.92 : ((x + .055) / 1.055) ** 2.4;
+            });
+            return .2126 * channels[0] + .7152 * channels[1] + .0722 * channels[2];
+          };
+          const a = luminance(fg), b = luminance(bg);
+          return (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+        }""", selector)
+
+    for theme in ('dark', 'light'):
+        if theme == 'light':
+            page.click('#themeToggle')
+            expect(page.locator('html')).to_have_attribute('data-theme', 'light')
+        assert ratio('#quickstart summary') >= 4.5, theme
+        assert ratio('#quickExplore') >= 4.5, theme
+        assert ratio('#quickPrepare') >= 4.5, theme
+    assert not errors, errors
